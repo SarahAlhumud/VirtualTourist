@@ -22,15 +22,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     }
     
     @objc func handleTap(gestureReconizer: UIGestureRecognizer) {
-        print("in obj c")
-        let location = gestureReconizer.location(in: mapView)
-        let coordinate = mapView.convert(location,toCoordinateFrom: mapView)
-        
-        // Add annotation:
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        mapView.addAnnotation(annotation)
-        
+        if gestureReconizer.state == UIGestureRecognizer.State.ended {
+            print("in obj c")
+            let location = gestureReconizer.location(in: mapView)
+            let coordinate = mapView.convert(location,toCoordinateFrom: mapView)
+            
+            // Add annotation:
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            mapView.addAnnotation(annotation)        }
     }
     
     // MARK: - MKMapViewDelegate
