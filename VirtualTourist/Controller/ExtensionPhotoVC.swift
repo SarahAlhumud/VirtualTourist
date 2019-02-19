@@ -13,7 +13,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //TODO: Return the number of items
-        return photos.count
+        return album.photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -21,7 +21,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         //TODO: Dequeue each cell, fill it with a photo, and return it
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCollectionViewCell
         
-        cell.photo.image = photos[indexPath.row]
+        cell.photo.image = album.photos[indexPath.row].img
         
         return cell
         

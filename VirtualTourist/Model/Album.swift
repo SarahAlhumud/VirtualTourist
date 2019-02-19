@@ -11,24 +11,23 @@ import MapKit
 
 class Album {
     /// The photos contained by the Album
-    var album: [Photo] = []
+    var photos: [Photo] = []
     
     var coordinate: CLLocationCoordinate2D
     
     init(coordinate: CLLocationCoordinate2D) {
         self.coordinate = coordinate
-        album = []
+        photos = []
     }
 }
 
 extension Album {
-//    /// Add a new photo to the notebook
-//    func addPhoto() {
-//        album.append(Photo())
-//    }
-//
-//    /// Removes the note at a specific index
-//    func removePhoto(at index: Int) {
-//        album.remove(at: index)
-//    }
+    /// Add a photo to the album
+    func addPhoto(photo: Photo) {
+        photos.append(photo)
+    }
+    
+    var count: Int {
+        return photos.count
+    }
 }

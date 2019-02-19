@@ -15,8 +15,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var newCollectionBtn: UIButton!
     
     var coordinate: CLLocationCoordinate2D!
-    var photos : [UIImage] = []
-    
+    var album: Album!
     
     @IBAction func newCollectionBtnPressed(_ sender: Any) {
     }
@@ -35,6 +34,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         let region = MKCoordinateRegion(center: coordinate, span: span)
         self.mapView.setRegion(region, animated: true)
         setUIEnabled(false)
+        album = Album(coordinate: coordinate)
         
         let _ = FlickrAPI.sharedInstance().displayImageFromFlickrBySearch(coordinate) { (photosArray, error) in
             if let error = error {
@@ -49,17 +49,23 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
                     print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(img)")
                     return
                 }
+
                 // if an image exists at the url, set the image
                 let imageURL = URL(string: imageUrlString)
-                if let imageData = try? Data(contentsOf: imageURL!) {
-                    self.photos.append(UIImage(data: imageData)!)
-                    performUIUpdatesOnMain {
-                        self.collectionView.reloadData()
-                    }
-                } else {
-                    print("Image does not exist at \(String(describing: imageURL))")
+                let photo: Photo = Photo(url: imageURL!)
+                self.album.addPhoto(photo: photo)
+                performUIUpdatesOnMain {
+                    self.collectionView.reloadData()
                 }
-                print(self.photos.count)
+                
+//                if let imageData = try? Data(contentsOf: imageURL!) {
+//                    self.photos.append(UIImage(data: imageData)!)
+//                    performUIUpdatesOnMain {
+//                        self.collectionView.reloadData()
+//                    }
+//                } else {
+//                    print("Image does not exist at \(String(describing: imageURL))")
+//                }
                 
             }
             print("End")

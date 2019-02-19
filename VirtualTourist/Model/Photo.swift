@@ -14,26 +14,23 @@ class Photo {
     let url: URL
     
     /// The binary date of photo
-    var rawPhoto: Data {
-        if let data = try? Data(contentsOf: url) {
-            return data
-        } else {
-            print("Image does not exist at \(String(describing: url))")
-            return Data()
-        }
-    }
-    
-    var img: UIImage {
-        if let img = UIImage(data: rawPhoto) {
-            return img
-        } else {
-            print("Image does not exist at \(String(describing: url))")
-            return UIImage()
-        }
-    }
-    
+    var rawPhoto: Data
+    var img: UIImage
     
     init(url: URL) {
         self.url = url
+        if let data = try? Data(contentsOf: url) {
+            rawPhoto = data
+        } else {
+            print("Image does not exist at \(String(describing: url))")
+            rawPhoto = Data()
+        }
+        if let imgWrap = UIImage(data: rawPhoto) {
+            img = imgWrap
+        } else {
+            print("Image does not exist at \(String(describing: url))")
+            img = UIImage()
+            
+        }
     }
 }
