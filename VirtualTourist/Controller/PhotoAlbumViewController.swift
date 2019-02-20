@@ -84,9 +84,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
                     self.setUIEnabled(true)
                     return
                 }
-                print(imageURL)
                 
-                // TODO
                 let photo: Photo = Photo(context: self.dataController.viewContext)
                 photo.uri = imageURL
                 photo.rawPhoto = imageData
