@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
@@ -15,13 +16,22 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var newCollectionBtn: UIButton!
     
     var coordinate: CLLocationCoordinate2D!
-    var album: Album!
+    var photos: [Photo]!
+    var pin: Pin!
+    var dataController: DataController!
     
     @IBAction func newCollectionBtnPressed(_ sender: Any) {
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        // fetch request
+        let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
+        fetchRequest.predicate = predicate
+        if let result = try? dataController.viewContext.fetch(fetchRequest){
+            photos = result
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,45 +44,52 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         let region = MKCoordinateRegion(center: coordinate, span: span)
         self.mapView.setRegion(region, animated: true)
         setUIEnabled(false)
-        album = Album(coordinate: coordinate)
         
-        let _ = FlickrAPI.sharedInstance().displayImageFromFlickrBySearch(coordinate) { (photosArray, error) in
-            if let error = error {
-                let controller = UIAlertController(title: "", message: "\(error.localizedDescription)", preferredStyle: .alert)
-                
-                controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                
-                self.present(controller, animated: true, completion: nil)
-            }
-            for img in photosArray {
-                guard let imageUrlString = img[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                    print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(img)")
-                    return
+        if photos.isEmpty {
+            
+            let _ = FlickrAPI.sharedInstance().displayImageFromFlickrBySearch(coordinate) { (photosArray, error) in
+                if let error = error {
+                    let controller = UIAlertController(title: "", message: "\(error.localizedDescription)", preferredStyle: .alert)
+                    
+                    controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                    self.present(controller, animated: true, completion: nil)
                 }
-
-                // if an image exists at the url, set the image
-                let imageURL = URL(string: imageUrlString)
-                let photo: Photo = Photo(url: imageURL!)
-                self.album.addPhoto(photo: photo)
+                for img in photosArray {
+                    guard let imageUrlString = img[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                        print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(img)")
+                        return
+                    }
+                    
+                    // if an image exists at the url, set the image
+                    let imageURL = URL(string: imageUrlString)
+                    
+                    guard let imageData = try? Data(contentsOf: imageURL!) else {
+                        print("Image does not exist at \(String(describing: imageURL))")
+                        return
+                    }
+                    
+                    // TODO
+                    let photo: Photo = Photo(context: self.dataController.viewContext)
+                    photo.uri = imageURL
+                    photo.rawPhoto = imageData
+                    photo.pin = self.pin
+                    try? self.dataController.viewContext.save()
+                    self.photos.append(photo)
+                    
+                    performUIUpdatesOnMain {
+                        self.collectionView.reloadData()
+                    }
+                    
+                    
+                    
+                }
+                print("End")
                 performUIUpdatesOnMain {
                     self.collectionView.reloadData()
                 }
                 
-//                if let imageData = try? Data(contentsOf: imageURL!) {
-//                    self.photos.append(UIImage(data: imageData)!)
-//                    performUIUpdatesOnMain {
-//                        self.collectionView.reloadData()
-//                    }
-//                } else {
-//                    print("Image does not exist at \(String(describing: imageURL))")
-//                }
-                
             }
-            print("End")
-            performUIUpdatesOnMain {
-                self.collectionView.reloadData()
-            }
-            
         }
         
         
