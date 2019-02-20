@@ -25,8 +25,14 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         }
         
         return cell
-        
-        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        dataController.viewContext.delete(photos[indexPath.row])
+        try? self.dataController.viewContext.save()
+        photos.remove(at: indexPath.row)
+        collectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

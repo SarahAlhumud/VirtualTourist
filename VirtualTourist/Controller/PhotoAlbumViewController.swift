@@ -21,6 +21,14 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     var dataController: DataController!
     
     @IBAction func newCollectionBtnPressed(_ sender: Any) {
+        // Delete it from disk
+        pin.photos = nil
+        print(dataController.viewContext.hasChanges)
+        try? self.dataController.viewContext.save()
+        collectionView.reloadData()
+        photos.removeAll()
+        
+        getPhotos()
     }
     
     override func viewDidLoad() {
@@ -43,77 +51,62 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         let region = MKCoordinateRegion(center: coordinate, span: span)
         self.mapView.setRegion(region, animated: true)
-        setUIEnabled(false)
         
         if photos.isEmpty {
-            
-            let _ = FlickrAPI.sharedInstance().displayImageFromFlickrBySearch(coordinate) { (photosArray, error) in
-                if let error = error {
-                    let controller = UIAlertController(title: "", message: "\(error.localizedDescription)", preferredStyle: .alert)
-                    
-                    controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    
-                    self.present(controller, animated: true, completion: nil)
+            getPhotos()
+        }
+        
+    }
+    // MARK:- Get photos from flickr and save them
+    func getPhotos(){
+        setUIEnabled(false)
+        let _ = FlickrAPI.sharedInstance().displayImageFromFlickrBySearch(coordinate) { (photosArray, error) in
+            if let error = error {
+                let controller = UIAlertController(title: "", message: "\(error.localizedDescription)", preferredStyle: .alert)
+                
+                controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                
+                self.present(controller, animated: true, completion: nil)
+                self.setUIEnabled(true)
+            }
+            for img in photosArray {
+                guard let imageUrlString = img[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                    print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(img)")
+                    self.setUIEnabled(true)
+                    return
                 }
-                for img in photosArray {
-                    guard let imageUrlString = img[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                        print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(img)")
-                        return
-                    }
-                    
-                    // if an image exists at the url, set the image
-                    let imageURL = URL(string: imageUrlString)
-                    
-                    guard let imageData = try? Data(contentsOf: imageURL!) else {
-                        print("Image does not exist at \(String(describing: imageURL))")
-                        return
-                    }
-                    
-                    // TODO
-                    let photo: Photo = Photo(context: self.dataController.viewContext)
-                    photo.uri = imageURL
-                    photo.rawPhoto = imageData
-                    photo.pin = self.pin
-                    try? self.dataController.viewContext.save()
-                    self.photos.append(photo)
-                    
-                    performUIUpdatesOnMain {
-                        self.collectionView.reloadData()
-                    }
-                    
-                    
-                    
+                
+                // if an image exists at the url, set the image
+                let imageURL = URL(string: imageUrlString)
+                
+                guard let imageData = try? Data(contentsOf: imageURL!) else {
+                    print("Image does not exist at \(String(describing: imageURL))")
+                    self.setUIEnabled(true)
+                    return
                 }
-                print("End")
+                print(imageURL)
+                
+                // TODO
+                let photo: Photo = Photo(context: self.dataController.viewContext)
+                photo.uri = imageURL
+                photo.rawPhoto = imageData
+                photo.pin = self.pin
+                try? self.dataController.viewContext.save()
+                self.photos.append(photo)
+                
                 performUIUpdatesOnMain {
                     self.collectionView.reloadData()
                 }
-                
             }
+            print("End")
+            self.setUIEnabled(true)
+            performUIUpdatesOnMain {
+                self.collectionView.reloadData()
+            }
+            
         }
-        
-        
-        
+
     }
-    
-    // MARK: Helper for Creating a URL from Parameters
-    
-    private func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
-        
-        var components = URLComponents()
-        components.scheme = Constants.Flickr.APIScheme
-        components.host = Constants.Flickr.APIHost
-        components.path = Constants.Flickr.APIPath
-        components.queryItems = [URLQueryItem]()
-        
-        for (key, value) in parameters {
-            let queryItem = URLQueryItem(name: key, value: "\(value)")
-            components.queryItems!.append(queryItem)
-        }
-        
-        return components.url!
-    }
-    
     
     // MARK: - MKMapViewDelegate
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
