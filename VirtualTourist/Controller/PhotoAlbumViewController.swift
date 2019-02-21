@@ -14,6 +14,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var newCollectionBtn: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var coordinate: CLLocationCoordinate2D!
     var photos: [Photo]!
@@ -131,8 +132,12 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         // adjust newCollectionBtn alphas
         if enabled {
             newCollectionBtn.alpha = 1.0
+            self.activityIndicator.alpha = 0.0
+            self.activityIndicator.stopAnimating()
         } else {
             newCollectionBtn.alpha = 0.5
+            activityIndicator.alpha = 1.0
+            activityIndicator.startAnimating()
         }
     }
     

@@ -100,6 +100,9 @@
                                     <outlet property="delegate" destination="gtT-wJ-e8N" id="qrx-m2-wJw"/>
                                 </connections>
                             </collectionView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="NLD-Kt-2hH">
+                                <rect key="frame" x="197" y="368" width="20" height="20"/>
+                            </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RW8-Tz-Zam">
                                 <rect key="frame" x="0.0" y="689" width="414" height="47"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -118,10 +121,12 @@
                             <constraint firstItem="XrY-hQ-MrJ" firstAttribute="top" secondItem="vkm-oV-uCW" secondAttribute="bottom" id="7IB-gX-bwd"/>
                             <constraint firstItem="RW8-Tz-Zam" firstAttribute="top" secondItem="XrY-hQ-MrJ" secondAttribute="bottom" id="AsG-t3-iNb"/>
                             <constraint firstItem="XrY-hQ-MrJ" firstAttribute="top" secondItem="acd-za-Fur" secondAttribute="top" constant="209" id="EHl-mk-s3t"/>
+                            <constraint firstItem="NLD-Kt-2hH" firstAttribute="centerX" secondItem="acd-za-Fur" secondAttribute="centerX" id="fTe-sS-lqh"/>
                             <constraint firstItem="RW8-Tz-Zam" firstAttribute="bottom" secondItem="acd-za-Fur" secondAttribute="bottom" id="hBv-AY-y8W"/>
                             <constraint firstItem="RW8-Tz-Zam" firstAttribute="leading" secondItem="XrY-hQ-MrJ" secondAttribute="leading" id="hok-Ts-bJv"/>
                             <constraint firstItem="acd-za-Fur" firstAttribute="trailing" secondItem="vkm-oV-uCW" secondAttribute="trailing" id="j4J-8X-0qU"/>
                             <constraint firstItem="vkm-oV-uCW" firstAttribute="leading" secondItem="acd-za-Fur" secondAttribute="leading" id="jYD-sR-c9L"/>
+                            <constraint firstItem="NLD-Kt-2hH" firstAttribute="centerY" secondItem="acd-za-Fur" secondAttribute="centerY" id="kGY-g1-Dy3"/>
                             <constraint firstItem="acd-za-Fur" firstAttribute="trailing" secondItem="XrY-hQ-MrJ" secondAttribute="trailing" id="mQA-Y1-T6b"/>
                             <constraint firstItem="RW8-Tz-Zam" firstAttribute="trailing" secondItem="XrY-hQ-MrJ" secondAttribute="trailing" id="trY-0u-acE"/>
                             <constraint firstItem="XrY-hQ-MrJ" firstAttribute="leading" secondItem="acd-za-Fur" secondAttribute="leading" id="xUm-eP-Q9b"/>
@@ -129,6 +134,7 @@
                         <viewLayoutGuide key="safeArea" id="acd-za-Fur"/>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="NLD-Kt-2hH" id="syY-U1-cXN"/>
                         <outlet property="collectionView" destination="XrY-hQ-MrJ" id="vaZ-FR-Bpz"/>
                         <outlet property="mapView" destination="vkm-oV-uCW" id="Uqc-nH-zme"/>
                         <outlet property="newCollectionBtn" destination="RW8-Tz-Zam" id="cyi-tC-Hev"/>
