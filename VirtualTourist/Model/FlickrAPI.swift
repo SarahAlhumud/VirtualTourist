@@ -71,20 +71,20 @@ class FlickrAPI: NSObject {
             }
             
             /* GUARD: Did Flickr return an error (stat != ok)? */
-            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String, stat == Constants.FlickrResponseValues.OKStatus else {
+            guard let stat = parsedResult[FlickrAPI.FlickrResponseKeys.Status] as? String, stat == FlickrAPI.FlickrResponseValues.OKStatus else {
                 displayError("Flickr API returned an error. See error code and message in \(String(describing: parsedResult))")
                 return
             }
             
             /* GUARD: Is "photos" key in our result? */
-            guard let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-                displayError("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(String(describing: parsedResult))")
+            guard let photosDictionary = parsedResult[FlickrAPI.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
+                displayError("Cannot find keys '\(FlickrAPI.FlickrResponseKeys.Photos)' in \(String(describing: parsedResult))")
                 return
             }
             
             /* GUARD: Is "pages" key in the photosDictionary? */
-            guard let totalPages = photosDictionary[Constants.FlickrResponseKeys.Pages] as? Int else {
-                displayError("Cannot find key '\(Constants.FlickrResponseKeys.Pages)' in \(photosDictionary)")
+            guard let totalPages = photosDictionary[FlickrAPI.FlickrResponseKeys.Pages] as? Int else {
+                displayError("Cannot find key '\(FlickrAPI.FlickrResponseKeys.Pages)' in \(photosDictionary)")
                 return
             }
             
@@ -107,7 +107,7 @@ class FlickrAPI: NSObject {
         
         // add the page to the method's parameters
         var methodParametersWithPageNumber = methodParameters
-        methodParametersWithPageNumber[Constants.FlickrParameterKeys.Page] = withPageNumber as AnyObject?
+        methodParametersWithPageNumber[FlickrAPI.FlickrParameterKeys.Page] = withPageNumber as AnyObject?
         
         // create session and request
         let session = URLSession.shared
@@ -151,20 +151,20 @@ class FlickrAPI: NSObject {
             }
             
             /* GUARD: Did Flickr return an error (stat != ok)? */
-            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String, stat == Constants.FlickrResponseValues.OKStatus else {
+            guard let stat = parsedResult[FlickrAPI.FlickrResponseKeys.Status] as? String, stat == FlickrAPI.FlickrResponseValues.OKStatus else {
                 displayError("Flickr API returned an error. See error code and message in \(String(describing: parsedResult))")
                 return
             }
             
             /* GUARD: Is the "photos" key in our result? */
-            guard let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-                displayError("Cannot find key '\(Constants.FlickrResponseKeys.Photos)' in \(String(describing: parsedResult))")
+            guard let photosDictionary = parsedResult[FlickrAPI.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
+                displayError("Cannot find key '\(FlickrAPI.FlickrResponseKeys.Photos)' in \(String(describing: parsedResult))")
                 return
             }
             
             /* GUARD: Is the "photo" key in photosDictionary? */
-            guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
-                displayError("Cannot find key '\(Constants.FlickrResponseKeys.Photo)' in \(photosDictionary)")
+            guard let photosArray = photosDictionary[FlickrAPI.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
+                displayError("Cannot find key '\(FlickrAPI.FlickrResponseKeys.Photo)' in \(photosDictionary)")
                 return
             }
             
@@ -179,15 +179,15 @@ class FlickrAPI: NSObject {
     private func getParameters(coordinate: CLLocationCoordinate2D) -> [String:AnyObject]  {
         
         let methodParameters = [
-            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod,
-            Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey,
-            Constants.FlickrParameterKeys.Lat: coordinate.latitude,
-            Constants.FlickrParameterKeys.Lon: coordinate.longitude,
-            Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch,
-            Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
-            Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
-            Constants.FlickrParameterKeys.PerPage: Constants.FlickrParameterValues.PerPageValue,
-            Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
+            FlickrAPI.FlickrParameterKeys.Method: FlickrAPI.FlickrParameterValues.SearchMethod,
+            FlickrAPI.FlickrParameterKeys.APIKey: FlickrAPI.FlickrParameterValues.APIKey,
+            FlickrAPI.FlickrParameterKeys.Lat: coordinate.latitude,
+            FlickrAPI.FlickrParameterKeys.Lon: coordinate.longitude,
+            FlickrAPI.FlickrParameterKeys.SafeSearch: FlickrAPI.FlickrParameterValues.UseSafeSearch,
+            FlickrAPI.FlickrParameterKeys.Extras: FlickrAPI.FlickrParameterValues.MediumURL,
+            FlickrAPI.FlickrParameterKeys.Format: FlickrAPI.FlickrParameterValues.ResponseFormat,
+            FlickrAPI.FlickrParameterKeys.PerPage: FlickrAPI.FlickrParameterValues.PerPageValue,
+            FlickrAPI.FlickrParameterKeys.NoJSONCallback: FlickrAPI.FlickrParameterValues.DisableJSONCallback
             ] as [String:AnyObject]
         return methodParameters
     }
@@ -197,9 +197,9 @@ class FlickrAPI: NSObject {
     private func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
         
         var components = URLComponents()
-        components.scheme = Constants.Flickr.APIScheme
-        components.host = Constants.Flickr.APIHost
-        components.path = Constants.Flickr.APIPath
+        components.scheme = FlickrAPI.Constants.APIScheme
+        components.host = FlickrAPI.Constants.APIHost
+        components.path = FlickrAPI.Constants.APIPath
         components.queryItems = [URLQueryItem]()
         
         for (key, value) in parameters {

@@ -39,7 +39,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     }
     
     @objc func handleTap(gestureReconizer: UIGestureRecognizer) {
-        if gestureReconizer.state == UIGestureRecognizer.State.ended {
+        if gestureReconizer.state == UIGestureRecognizer.State.began {
             let location = gestureReconizer.location(in: mapView)
             let coordinate = mapView.convert(location,toCoordinateFrom: mapView)
             
@@ -61,6 +61,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     }
     
     func addAnnotations(){
+        mapView.removeAnnotations(mapView.annotations)
+        
         var annotations = [MKPointAnnotation]()
         
         for pin in pins {

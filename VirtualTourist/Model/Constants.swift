@@ -8,12 +8,12 @@
 
 import UIKit
 
-// MARK: - Constants
+// MARK: - Values of FlickrAPI
 
-struct Constants {
+extension FlickrAPI {
     
-    // MARK: Flickr
-    struct Flickr {
+    // MARK: Flickr Constants
+    struct Constants {
         static let APIScheme = "https"
         static let APIHost = "api.flickr.com"
         static let APIPath = "/services/rest"
@@ -67,15 +67,4 @@ struct Constants {
     struct FlickrResponseValues {
         static let OKStatus = "ok"
     }
-    
-    // FIX: As of Swift 2.2, using strings for selectors has been deprecated. Instead, #selector(methodName) should be used.
-    /*
-     // MARK: Selectors
-     struct Selectors {
-     static let KeyboardWillShow: Selector = "keyboardWillShow:"
-     static let KeyboardWillHide: Selector = "keyboardWillHide:"
-     static let KeyboardDidShow: Selector = "keyboardDidShow:"
-     static let KeyboardDidHide: Selector = "keyboardDidHide:"
-     }
-     */
 }

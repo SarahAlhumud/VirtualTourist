@@ -71,8 +71,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
                 self.setUIEnabled(true)
             }
             for img in photosArray {
-                guard let imageUrlString = img[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                    print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(img)")
+                guard let imageUrlString = img[FlickrAPI.FlickrResponseKeys.MediumURL] as? String else {
+                    debugPrint("Cannot find key '\(FlickrAPI.FlickrResponseKeys.MediumURL)' in \(img)")
                     self.setUIEnabled(true)
                     return
                 }
@@ -126,18 +126,19 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     }
     
     func setUIEnabled(_ enabled: Bool) {
-        
-        newCollectionBtn.isEnabled = enabled
-        
-        // adjust newCollectionBtn alphas
-        if enabled {
-            newCollectionBtn.alpha = 1.0
-            self.activityIndicator.alpha = 0.0
-            self.activityIndicator.stopAnimating()
-        } else {
-            newCollectionBtn.alpha = 0.5
-            activityIndicator.alpha = 1.0
-            activityIndicator.startAnimating()
+        performUIUpdatesOnMain {
+            self.newCollectionBtn.isEnabled = enabled
+            
+            // adjust newCollectionBtn alphas
+            if enabled {
+                self.newCollectionBtn.alpha = 1.0
+                self.activityIndicator.alpha = 0.0
+                self.activityIndicator.stopAnimating()
+            } else {
+                self.newCollectionBtn.alpha = 0.5
+                self.activityIndicator.alpha = 1.0
+                self.activityIndicator.startAnimating()
+            }
         }
     }
     
